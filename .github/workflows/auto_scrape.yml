@@ -27,6 +27,12 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add power_history.csv
-          git commit -m "Auto update power data" || exit 0
-          git push
+          # 檢查檔案是否存在，存在才執行 git add
+          if [ -f power_history.csv ]; then
+            git add power_history.csv
+            git commit -m "Auto update power data" || echo "No changes to commit"
+            git push
+          else
+            echo "錯誤：找不到 power_history.csv，無法存檔"
+            exit 1
+          fi
