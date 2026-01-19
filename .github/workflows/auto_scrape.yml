@@ -1,0 +1,32 @@
+name: Power Data Crawler
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # 每個整點自動執行
+  workflow_dispatch:      # 讓你可以手動點擊執行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 複製專案程式碼
+        uses: actions/checkout@v3
+
+      - name: 設定 Python 環境
+        uses: setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: 安裝套件
+        run: pip install requests
+
+      - name: 執行爬蟲
+        run: python scrape_power.py
+
+      - name: 將更新後的 CSV 存回專案
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add power_history.csv
+          git commit -m "Auto update power data" || exit 0
+          git push
