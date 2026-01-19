@@ -1,0 +1,1 @@
+# Scrapy-TaiPower-Percentage
